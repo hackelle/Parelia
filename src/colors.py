@@ -1,0 +1,11 @@
+# define used colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRASS = (0, 255, 0)
+SKY = (0, 204, 255)
+RED = (255, 0, 0)
+SUN = (255, 255, 0)
+TREE_STOMP = (77, 0, 0)
+LEAF = (0, 102, 0)
+GRAY = (210, 210, 210)
+PURPLE = (255, 0, 255)
