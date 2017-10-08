@@ -45,11 +45,11 @@ class Dwarf(pygame.sprite.Sprite):
         if not self.double_jump:
             if self.in_air:
                 self.double_jump = True
-                self.vertical_velocity += 7
+                self.vertical_velocity = 15
             else:
                 self.in_air = True
                 self.jump_base_y = self.rect.y
-                self.vertical_velocity += 15
+                self.vertical_velocity = 15
 
     def stick_to_ground(self):
         self.vertical_velocity = 0

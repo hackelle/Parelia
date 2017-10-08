@@ -2,6 +2,7 @@ import pygame
 import math
 import colors as c
 import dwarf
+import background
 
 
 def list_in_tuple(list_in, tuple_in):
@@ -24,7 +25,7 @@ you_loose_font = pygame.font.SysFont('Comic Sans MS', 100)
 you_loose_surface = you_loose_font.render('You Loose!', False, (255, 0, 0))
 
 # init screen
-size = (700, 500)
+size = (800, 600)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Parelia")
 
@@ -41,12 +42,15 @@ sun_rotation = 0
 # create the character
 player_character = dwarf.Dwarf(c.BLACK, 20, 30)
 player_character.rect.x = 20
-player_character.rect.y = 380
+player_character.rect.y = 470
 
 # create the enemy
 enemy_1 = dwarf.Dwarf(c.BLACK, 20, 30)
 enemy_1.rect.x = 650
-enemy_1.rect.y = 380
+enemy_1.rect.y = 470
+
+# load a background
+back_ground = background.Background('../res/world/simple_hills_big.png', [0, 0])
 
 # add character for later drawing
 all_spirits = pygame.sprite.Group()
@@ -92,9 +96,8 @@ while carry_on:
         all_spirits.update()
 
     # draw background
-    # grass and sky
-    pygame.draw.rect(screen, c.GRASS, [0, 300, 700, 200], 0)
-    pygame.draw.rect(screen, c.SKY, [0, 0, 700, 300], 0)
+    screen.fill([255, 255, 255])
+    screen.blit(back_ground.image, back_ground.rect)
 
     # draw sun
     pygame.draw.ellipse(screen, c.SUN, [70, 40, 100, 100], 0)
@@ -110,35 +113,26 @@ while carry_on:
     sun_rotation -= math.pi*2
     sun_rotation += math.pi/360
 
-    # draw tree
-    pygame.draw.rect(screen, c.TREE_STOMP, [550, 200, 30, 150], 0)
-    pygame.draw.ellipse(screen, c.LEAF, [500, 100, 130, 180], 0)
-
-    # Draw The Road
-    pygame.draw.rect(screen, c.GRAY, [0, 400, 700, 50])
-    # Draw Line painting on the road
-    pygame.draw.line(screen, c.WHITE, [0, 420], [700, 420], 2)
-
     # Draw all the sprites in one go.
     all_spirits.draw(screen)
 
     # draw health
     if player_character.health <= 0:
         # show gray overlay
-        gray_surface = pygame.Surface((700, 500))  # the size of your rect
-        gray_surface.set_alpha(200)  # alpha level
-        gray_surface.fill(c.GRAY_TRANSPARENT)  # this fills the entire surface
+        gray_surface = pygame.Surface(size)  # the size of your rect
+        gray_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
+        gray_surface.fill(c.RED_DEAD)  # this fills the entire surface
         screen.blit(gray_surface, (0, 0))
         # show message
         screen.blit(you_loose_surface, (180, 200))
         # stop movement
         game_running = False
     if player_character.health < 20:
-        pygame.draw.line(screen, c.HEALTH_RED, [690, 20], [690 - player_character.health*1.5, 20], 5)
+        pygame.draw.line(screen, c.HEALTH_RED, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
     elif player_character.health < 50:
-        pygame.draw.line(screen, c.HEALTH_YELLOW, [690, 20], [690 - player_character.health*1.5, 20], 5)
+        pygame.draw.line(screen, c.HEALTH_YELLOW, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
     else:
-        pygame.draw.line(screen, c.HEALTH_GREEN, [690, 20], [690 - player_character.health*1.5, 20], 5)
+        pygame.draw.line(screen, c.HEALTH_GREEN, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()

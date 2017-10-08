@@ -1,0 +1,27 @@
+# draw background
+    # grass and sky
+    pygame.draw.rect(screen, c.GRASS, [0, 300, 700, 200], 0)
+    pygame.draw.rect(screen, c.SKY, [0, 0, 700, 300], 0)
+
+    # draw sun
+    pygame.draw.ellipse(screen, c.SUN, [70, 40, 100, 100], 0)
+    for i in range(8):
+        length_correction = math.fabs(0.2 * math.sin(sun_rotation) + 0.2 * math.sin(2*sun_rotation)) + 0.8
+        start_x = 120 + math.cos(sun_rotation) * 55
+        start_y = 90 + math.sin(sun_rotation) * 55
+        end_x = 120 + math.cos(sun_rotation) * 85 * length_correction
+        end_y = 90 + math.sin(sun_rotation) * 85 * length_correction
+        pygame.draw.line(screen, c.SUN, [start_x, start_y], [end_x, end_y], 3)
+        sun_rotation += math.pi / 4
+
+    sun_rotation -= math.pi*2
+    sun_rotation += math.pi/360
+
+    # draw tree
+    pygame.draw.rect(screen, c.TREE_STOMP, [550, 200, 30, 150], 0)
+    pygame.draw.ellipse(screen, c.LEAF, [500, 100, 130, 180], 0)
+
+    # Draw The Road
+    pygame.draw.rect(screen, c.GRAY, [0, 400, 700, 50])
+    # Draw Line painting on the road
+    pygame.draw.line(screen, c.WHITE, [0, 420], [700, 420], 2)
