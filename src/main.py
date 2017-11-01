@@ -18,6 +18,12 @@ def list_in_tuple(list_in, tuple_in):
         return False
     return False
 
+
+def draw_health(color, health):
+    """Draws a line according to health given at the health-bar position."""
+    pygame.draw.line(screen, color, [size[0] - 10, 20], [size[0] - 10 - health * 1.5, 20], 10)
+
+
 # init game
 pygame.init()
 
@@ -88,8 +94,9 @@ while carry_on:
             player_character.move_right(5, size)
 
     collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
-    if len(collision_list) > 0:
-        player_character.damage(2)
+
+    # damage for every collision
+    player_character.damage(2 * len(collision_list))
 
     # update with game logic
     if game_running:
@@ -100,15 +107,7 @@ while carry_on:
     screen.blit(back_ground.image, back_ground.rect)
 
     # draw sun
-    pygame.draw.ellipse(screen, c.SUN, [70, 40, 100, 100], 0)
-    for i in range(8):
-        length_correction = math.fabs(0.2 * math.sin(sun_rotation) + 0.2 * math.sin(2*sun_rotation)) + 0.8
-        start_x = 120 + math.cos(sun_rotation) * 55
-        start_y = 90 + math.sin(sun_rotation) * 55
-        end_x = 120 + math.cos(sun_rotation) * 85 * length_correction
-        end_y = 90 + math.sin(sun_rotation) * 85 * length_correction
-        pygame.draw.line(screen, c.SUN, [start_x, start_y], [end_x, end_y], 3)
-        sun_rotation += math.pi / 4
+    back_ground.draw_sun(screen, sun_rotation)
 
     sun_rotation -= math.pi*2
     sun_rotation += math.pi/360
@@ -118,7 +117,7 @@ while carry_on:
 
     # draw health
     if player_character.health <= 0:
-        # show gray overlay
+        # show red overlay
         gray_surface = pygame.Surface(size)  # the size of your rect
         gray_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
         gray_surface.fill(c.RED_DEAD)  # this fills the entire surface
@@ -128,11 +127,11 @@ while carry_on:
         # stop movement
         game_running = False
     if player_character.health < 20:
-        pygame.draw.line(screen, c.HEALTH_RED, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
+        draw_health(c.HEALTH_RED, player_character.health)
     elif player_character.health < 50:
-        pygame.draw.line(screen, c.HEALTH_YELLOW, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
+        draw_health(c.HEALTH_YELLOW, player_character.health)
     else:
-        pygame.draw.line(screen, c.HEALTH_GREEN, [size[0] - 10, 20], [size[0] - 10 - player_character.health*1.5, 20], 5)
+        draw_health(c.HEALTH_GREEN, player_character.health)
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
