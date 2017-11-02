@@ -70,7 +70,7 @@ class Dwarf(character.Character):
                 self.next_x = self.rect.x + self.walk_speed
                 return 0
             else:
-                self.next_x = screen_size[0] - self.rect.width -100
+                self.next_x = screen_size[0] - self.rect.width - 100
                 return -self.walk_speed
         elif direction == character.Direction.LEFT:
             if self.rect.x > 0 + self.walk_speed + 100:

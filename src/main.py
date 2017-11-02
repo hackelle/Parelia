@@ -5,6 +5,7 @@ import dwarf
 import background
 import character
 import helpingFuntions as hF
+import catofly
 
 DRAW_OBSTACLES = True
 
@@ -41,9 +42,21 @@ player_character.rect.x = 20
 player_character.rect.y = 470
 
 # create the enemy
-enemy_1 = dwarf.Dwarf()
-enemy_1.rect.x = 450
-enemy_1.rect.y = 470
+enemy_dwarf_1 = dwarf.Dwarf()
+enemy_dwarf_1.rect.x = 450
+enemy_dwarf_1.rect.y = 470
+
+enemy_catofly_1 = catofly.Catofly()
+enemy_catofly_1.center = [300, 300]
+enemy_catofly_1.radius = 40
+
+enemy_catofly_2 = catofly.Catofly()
+enemy_catofly_2.center = [500, 300]
+enemy_catofly_2.radius = 40
+
+enemy_catofly_3 = catofly.Catofly()
+enemy_catofly_3.center = [200, 400]
+enemy_catofly_3.radius = 30
 
 # load a background in a sprite group
 back_ground = background.Background('../res/world/simple_hills_big.png', [0, 0])
@@ -53,7 +66,10 @@ background_sprites.add(back_ground)
 # add character for later drawing
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player_character)
-all_sprites.add(enemy_1)
+all_sprites.add(enemy_dwarf_1)
+all_sprites.add(enemy_catofly_1)
+all_sprites.add(enemy_catofly_2)
+all_sprites.add(enemy_catofly_3)
 
 
 # obstacles are in here
@@ -62,7 +78,8 @@ obstacles.add(hF.pic_to_sprite_group("../res/world/simple_hills_big_terrain.png"
 
 # create an enemy group for damage
 enemies = pygame.sprite.Group()
-enemies.add(enemy_1)
+enemies.add(enemy_dwarf_1)
+enemies.add(enemy_catofly_1)
 
 # define control keys
 jump_keys = [pygame.K_SPACE, pygame.K_w, pygame.K_UP, pygame.K_KP8]
