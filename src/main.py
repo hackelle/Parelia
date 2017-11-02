@@ -44,8 +44,10 @@ enemy_1 = dwarf.Dwarf()
 enemy_1.rect.x = 650
 enemy_1.rect.y = 470
 
-# load a background
+# load a background in a sprite group
 back_ground = background.Background('../res/world/simple_hills_big.png', [0, 0])
+background_sprites = pygame.sprite.Group()
+background_sprites.add(back_ground)
 
 # add character for later drawing
 all_sprites = pygame.sprite.Group()
@@ -78,6 +80,8 @@ while carry_on:
             elif event.key in jump_keys:
                 if game_running:
                     player_character.jump()
+            elif event.key == pygame.K_o:
+                DRAW_OBSTACLES = not DRAW_OBSTACLES
 
         elif event.type == pygame.KEYUP:
             pass
@@ -99,8 +103,7 @@ while carry_on:
         all_sprites.update(obstacles)
 
     # draw background
-    screen.fill([255, 255, 255])
-    screen.blit(back_ground.image, back_ground.rect)
+    background_sprites.draw(screen)
 
     # draw sun
     back_ground.draw_sun(screen, sun_rotation)

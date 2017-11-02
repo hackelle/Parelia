@@ -2,6 +2,7 @@ import pygame
 import colors as c
 import os.path
 import character
+import math
 
 
 class Dwarf(character.Character):
@@ -15,7 +16,9 @@ class Dwarf(character.Character):
     strength = 0  # factor for damage dealing
     critical_chance = 0  # possibility for critical hits
     walk_speed = 5  # the speed, the character can walk each update
+    images = []  # array of animation images
     image = None  # visual representation, should be drawable
+    image_index = 0  # index of current image
     rect = None  # rectangle surrounding the character
 
     # changed by functions
@@ -34,17 +37,29 @@ class Dwarf(character.Character):
 
         # Pass in the color of the character, and its x and y position, width and height.
         # Set the background color and set it to be transparent
-        self.image = pygame.Surface([50, 10])
+        self.image = pygame.Surface([40, 50])
         self.image.fill(c.WHITE)
         self.image.set_colorkey(c.WHITE)
 
         # Draw the character (a rectangle!) on the surface
-        pygame.draw.rect(self.image, c.WHITE, [0, 0, 50, 10])
+        pygame.draw.rect(self.image, c.BLACK, [0, 0, 40, 50])
 
         # Instead we could load a proper picture of a character
         # Overwrite self.image, if dwarf-picture found
-        if os.path.isfile("../res/pics/dwarf-64.png"):
-            self.image = pygame.image.load("../res/pics/dwarf-64.png").convert_alpha()
+
+        path = "../res/pics/dwarf"
+        if os.path.isdir(path):
+            print("loading " + path)
+            files = sorted(os.listdir(path))
+            for file in files:
+                file_path = path + '/' + file
+                if os.path.isfile(file_path):
+                    self.images.append(pygame.image.load(file_path).convert_alpha())
+                    print("loading file " + file_path)
+            if len(self.images) > 0:
+                self.image = self.images[0]
+                self.image_index = 0
+
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -95,13 +110,26 @@ class Dwarf(character.Character):
             old_x = self.rect.x
             self.rect.x = self.next_x
             if pygame.sprite.spritecollide(self, world, False):
-                self.rect.x = old_x
+                # try to move up a bit (diagonal) (-y is up)
+                old_y = self.rect.y
+                self.rect.y = old_y - self.walk_speed
+                if pygame.sprite.spritecollide(self, world, False):
+                    self.rect.x = old_x
+                    self.rect.y = old_y
 
         # healing
         if self.health < 100:
             self.health += .5
         else:
             self.health = 100
+
+        # animation, get next frame
+        self.image_index += 0.2
+        if self.image_index >= len(self.images):
+            self.image_index = 0
+
+        self.image = self.images[math.floor(self.image_index)]
+
 
     def attack(self, other):
         if issubclass(character.Character, other):
