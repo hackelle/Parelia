@@ -15,3 +15,6 @@ PURPLE = (255, 0, 255)
 YELLOW = (255, 255, 0)
 GRAY_TRANSPARENT = (70, 70, 70)
 RED_DEAD = (70, 0, 0)
+
+# rgb-alpha
+OBSTACLE = (0, 255, 0, 127)

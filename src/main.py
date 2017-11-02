@@ -114,10 +114,10 @@ while carry_on:
     # draw health
     if player_character.health <= 0:
         # show red overlay
-        gray_surface = pygame.Surface(size)  # the size of your rect
-        gray_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
-        gray_surface.fill(c.RED_DEAD)  # this fills the entire surface
-        screen.blit(gray_surface, (0, 0))
+        red_surface = pygame.Surface(size)  # the size of your rect
+        red_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
+        red_surface.fill(c.RED_DEAD)  # this fills the entire surface
+        screen.blit(red_surface, (0, 0))
         # show message
         screen.blit(you_loose_surface, (180, 200))
         # stop movement
@@ -131,6 +131,7 @@ while carry_on:
 
     # draw obstacles for debug
     if DRAW_OBSTACLES:
+        # show red overlay
         obstacles.draw(screen)
 
     # --- Go ahead and update the screen with what we've drawn.

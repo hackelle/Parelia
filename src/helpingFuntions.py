@@ -60,9 +60,11 @@ def pic_to_sprite_group_rec(pic):
 
     # create rectangle in correct proportions
     sprite.image = pygame.Surface([end_x - start_x + 1, end_y - start_y + 1])
+    color = c.OBSTACLE  # needs to be 4D including alpha for transparency
+    sprite.image.set_alpha(color[3])
 
-    # Draw the character (a rectangle!) on the surface (only black rectangle)
-    pygame.draw.rect(sprite.image, c.BLACK, [0, 0, end_x - start_x, end_y - start_y])
+    # Draw the obstacle (a rectangle!) on the surface (only black rectangle)
+    pygame.draw.rect(sprite.image, color, [0, 0, end_x - start_x, end_y - start_y])
 
     # Fetch the rectangle object that has the dimensions of the image.
     sprite.rect = sprite.image.get_rect()
