@@ -22,3 +22,6 @@ class Background(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_file)
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
+
+    def shift(self, amount):
+        self.rect.x += amount

@@ -65,17 +65,21 @@ class Dwarf(character.Character):
 
     def move(self, direction, pixels, screen_size):
         if direction == character.Direction.RIGHT:
-            if self.rect.x < screen_size[0] - self.walk_speed - self.rect.width:
+            if self.rect.x < screen_size[0] - self.walk_speed - self.rect.width - 100:
                 # going right and not at border
                 self.next_x = self.rect.x + self.walk_speed
+                return 0
             else:
-                self.next_x = screen_size[0] - self.rect.width
+                self.next_x = screen_size[0] - self.rect.width -100
+                return -self.walk_speed
         elif direction == character.Direction.LEFT:
-            if self.rect.x > 0 + self.walk_speed:
+            if self.rect.x > 0 + self.walk_speed + 100:
                 # going left and not at border
                 self.next_x = self.rect.x - self.walk_speed
+                return 0
             else:
-                self.next_x = 0
+                self.next_x = 100
+                return self.walk_speed
 
     def jump(self):
         if self.remaining_jumps > 0:

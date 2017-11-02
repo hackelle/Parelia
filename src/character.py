@@ -40,7 +40,8 @@ class Character(ABC, pygame.sprite.Sprite):
     @abstractmethod
     def move(self, direction, pixels, screen_size):
         """Moves the sprite pixels to the direction (enum), if he doesn't leave the screen.
-        Else stays where he is."""
+        Else stays where he is.
+        Returns, how much the world is to be shifted"""
         pass
 
     @abstractmethod

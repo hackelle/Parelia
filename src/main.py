@@ -42,7 +42,7 @@ player_character.rect.y = 470
 
 # create the enemy
 enemy_1 = dwarf.Dwarf()
-enemy_1.rect.x = 650
+enemy_1.rect.x = 450
 enemy_1.rect.y = 470
 
 # load a background in a sprite group
@@ -88,11 +88,17 @@ while carry_on:
             pass
 
     keys = pygame.key.get_pressed()
+    world_shift = 0  # amount, the world has to be shifted for movement
     if game_running:
         if hF.list_in_tuple(left_keys, keys):
-            player_character.move(character.Direction.LEFT, 5, size)
+            world_shift = player_character.move(character.Direction.LEFT, 5, size)
         if hF.list_in_tuple(right_keys, keys):
-            player_character.move(character.Direction.RIGHT, 5, size)
+            world_shift = player_character.move(character.Direction.RIGHT, 5, size)
+    # shift the world
+    if not world_shift == 0:
+        back_ground.shift(world_shift)
+        hF.shift_group_x(obstacles.sprites(), world_shift)
+        hF.shift_group_x(all_sprites.sprites(), world_shift)
 
     collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
 
