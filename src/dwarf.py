@@ -60,7 +60,6 @@ class Dwarf(character.Character):
                 self.image = self.images[0]
                 self.image_index = 0
 
-
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
 
@@ -128,8 +127,7 @@ class Dwarf(character.Character):
         if self.image_index >= len(self.images):
             self.image_index = 0
 
-        self.image = self.images[math.floor(self.image_index)]
-
+        self.image = self.images[round(math.floor(self.image_index))]  # round only for to_int
 
     def attack(self, other):
         if issubclass(character.Character, other):

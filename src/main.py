@@ -4,9 +4,10 @@ import colors as c
 import dwarf
 import background
 import character
-import helpingFuntions as hf
+import helpingFuntions as hF
 
 DRAW_OBSTACLES = True
+
 
 def draw_health(color, health):
     """Draws a line according to health given at the health-bar position."""
@@ -57,7 +58,7 @@ all_sprites.add(enemy_1)
 
 # obstacles are in here
 obstacles = pygame.sprite.Group()
-obstacles.add(hf.pic_to_sprite_group("../res/world/simple_hills_big_terrain.png"))
+obstacles.add(hF.pic_to_sprite_group("../res/world/simple_hills_big_terrain.png"))
 
 # create an enemy group for damage
 enemies = pygame.sprite.Group()
@@ -88,9 +89,9 @@ while carry_on:
 
     keys = pygame.key.get_pressed()
     if game_running:
-        if hf.list_in_tuple(left_keys, keys):
+        if hF.list_in_tuple(left_keys, keys):
             player_character.move(character.Direction.LEFT, 5, size)
-        if hf.list_in_tuple(right_keys, keys):
+        if hF.list_in_tuple(right_keys, keys):
             player_character.move(character.Direction.RIGHT, 5, size)
 
     collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
@@ -106,7 +107,7 @@ while carry_on:
     background_sprites.draw(screen)
 
     # draw sun
-    back_ground.draw_sun(screen, sun_rotation)
+    background.draw_sun(screen, sun_rotation)
 
     sun_rotation -= math.pi*2
     sun_rotation += math.pi/360
