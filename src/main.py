@@ -17,7 +17,7 @@ def draw_health(color, health):
 pygame.init()
 
 you_loose_font = pygame.font.SysFont('Comic Sans MS', 100)
-you_loose_surface = you_loose_font.render('You Loose!', False, (255, 0, 0))
+you_loose_surface = you_loose_font.render('Yuu Loose!', False, (255, 0, 0))
 
 # init screen
 size = (800, 600)
@@ -64,9 +64,9 @@ enemies = pygame.sprite.Group()
 enemies.add(enemy_1)
 
 # define control keys
-jump_keys = [pygame.K_SPACE, pygame.K_w, pygame.K_UP]
-left_keys = [pygame.K_LEFT, pygame.K_a]
-right_keys = [pygame.K_RIGHT, pygame.K_d]
+jump_keys = [pygame.K_SPACE, pygame.K_w, pygame.K_UP, pygame.K_KP8]
+left_keys = [pygame.K_LEFT, pygame.K_a, pygame.K_KP4]
+right_keys = [pygame.K_RIGHT, pygame.K_d, pygame.K_KP6]
 
 # -------- Main Program Loop -----------
 while carry_on:
