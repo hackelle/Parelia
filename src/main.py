@@ -3,21 +3,10 @@ import math
 import colors as c
 import dwarf
 import background
+import character
+import helpingFuntions as hf
 
-
-def list_in_tuple(list_in, tuple_in):
-    """list_in is a list of indexes for tuple_in.
-    Returns True, if any of list_in indexes in tuple_in is True.
-    Returns false otherwise or if Index out of Range
-    """
-    try:
-        for l in range(len(list_in)):
-            if tuple_in[list_in[l]]:
-                return True
-    except:
-        return False
-    return False
-
+DRAW_OBSTACLES = True
 
 def draw_health(color, health):
     """Draws a line according to health given at the health-bar position."""
@@ -46,12 +35,12 @@ clock = pygame.time.Clock()
 sun_rotation = 0
 
 # create the character
-player_character = dwarf.Dwarf(c.BLACK, 20, 30)
+player_character = dwarf.Dwarf()
 player_character.rect.x = 20
 player_character.rect.y = 470
 
 # create the enemy
-enemy_1 = dwarf.Dwarf(c.BLACK, 20, 30)
+enemy_1 = dwarf.Dwarf()
 enemy_1.rect.x = 650
 enemy_1.rect.y = 470
 
@@ -59,13 +48,20 @@ enemy_1.rect.y = 470
 back_ground = background.Background('../res/world/simple_hills_big.png', [0, 0])
 
 # add character for later drawing
-all_spirits = pygame.sprite.Group()
-all_spirits.add(player_character)
-all_spirits.add(enemy_1)
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player_character)
+all_sprites.add(enemy_1)
 
+
+# obstacles are in here
+obstacles = pygame.sprite.Group()
+obstacles.add(hf.pic_to_sprite_group("../res/world/simple_hills_big_terrain.png"))
+
+# create an enemy group for damage
 enemies = pygame.sprite.Group()
 enemies.add(enemy_1)
 
+# define control keys
 jump_keys = [pygame.K_SPACE, pygame.K_w, pygame.K_UP]
 left_keys = [pygame.K_LEFT, pygame.K_a]
 right_keys = [pygame.K_RIGHT, pygame.K_d]
@@ -88,10 +84,10 @@ while carry_on:
 
     keys = pygame.key.get_pressed()
     if game_running:
-        if list_in_tuple(left_keys, keys):
-            player_character.move_left(5, size)
-        if list_in_tuple(right_keys, keys):
-            player_character.move_right(5, size)
+        if hf.list_in_tuple(left_keys, keys):
+            player_character.move(character.Direction.LEFT, 5, size)
+        if hf.list_in_tuple(right_keys, keys):
+            player_character.move(character.Direction.RIGHT, 5, size)
 
     collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
 
@@ -100,7 +96,7 @@ while carry_on:
 
     # update with game logic
     if game_running:
-        all_spirits.update()
+        all_sprites.update(obstacles)
 
     # draw background
     screen.fill([255, 255, 255])
@@ -113,7 +109,7 @@ while carry_on:
     sun_rotation += math.pi/360
 
     # Draw all the sprites in one go.
-    all_spirits.draw(screen)
+    all_sprites.draw(screen)
 
     # draw health
     if player_character.health <= 0:
@@ -132,6 +128,10 @@ while carry_on:
         draw_health(c.HEALTH_YELLOW, player_character.health)
     else:
         draw_health(c.HEALTH_GREEN, player_character.health)
+
+    # draw obstacles for debug
+    if DRAW_OBSTACLES:
+        obstacles.draw(screen)
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()

@@ -24,6 +24,10 @@ class Dwarf(character.Character):
     health = 100  # current health
     level = 1  # characters level, should be used for some calculations
 
+    # variables for the next update
+    next_x = -1
+    next_y = -1
+
     def __init__(self):
         # Call the parent class (Sprite) constructor
         super().__init__()
@@ -49,26 +53,20 @@ class Dwarf(character.Character):
         if direction == character.Direction.RIGHT:
             if self.rect.x < screen_size[0] - self.walk_speed - self.rect.width:
                 # going right and not at border
-                self.rect.x += self.walk_speed
+                self.next_x = self.rect.x + self.walk_speed
             else:
-                self.rect.x = screen_size[0]
+                self.next_x = screen_size[0] - self.rect.width
         elif direction == character.Direction.LEFT:
             if self.rect.x > 0 + self.walk_speed:
                 # going left and not at border
-                self.rect.x -= self.walk_speed
+                self.next_x = self.rect.x - self.walk_speed
             else:
-                self.rect.x = 0
+                self.next_x = 0
 
     def jump(self):
         if self.remaining_jumps > 0:
             self.remaining_jumps -= 1
             self.vertical_velocity = self.jump_height
-
-    def stick_to_ground(self, ground_level):
-        """Sets the sprite to the ground, all velocities set to 0."""
-        self.vertical_velocity = 0
-        self.remaining_jumps = self.max_possible_jumps
-        self.rect.y = ground_level
 
     def damage(self, amount):
         """Damages amount of the health of the sprite."""
@@ -77,17 +75,36 @@ class Dwarf(character.Character):
         else:
             self.health = 0
 
-    def update(self):
-        """Update function of Sprite, overwritten"""
-        if self.in_air:
-            self.vertical_velocity -= 1
+    def update(self, world):
+        """Update function of Sprite, overwritten.
+        Will move only, if there is no collision between the world-sprite group and self."""
+        # try this y move
+        # only move, if y is not colliding, else set velocity to 0 and reset jumps
+        self.next_y = self.rect.y - self.vertical_velocity  # jumping up is y lower
+        self.vertical_velocity -= 1
+        old_y = self.rect.y
+        self.rect.y = self.next_y
+        if pygame.sprite.spritecollide(self, world, False):
+            self.rect.y = old_y
+            self.vertical_velocity = 0
+            self.remaining_jumps = self.max_possible_jumps
 
-        if not self.vertical_velocity == 0:
-            # going up is lower y
-            self.rect.y -= self.vertical_velocity
+        # try this x move
+        # only move, if x is not colliding
+        if not self.next_x == -1:
+            old_x = self.rect.x
+            self.rect.x = self.next_x
+            if pygame.sprite.spritecollide(self, world, False):
+                self.rect.x = old_x
 
         # healing
         if self.health < 100:
             self.health += .5
         else:
             self.health = 100
+
+    def attack(self, other):
+        if issubclass(character.Character, other):
+            pass
+        else:
+            raise TypeError("other has to be a character")

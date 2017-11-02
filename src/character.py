@@ -1,5 +1,6 @@
 import pygame
 from enum import Enum
+from abc import ABC, abstractmethod
 
 
 class Direction(Enum):
@@ -12,7 +13,7 @@ class Direction(Enum):
     FRONT = 5
 
 
-class Character(pygame.sprite.Sprite):
+class Character(ABC, pygame.sprite.Sprite):
     """This class represents a character. It derives from the "Sprite" class in Pygame."""
 
     # fixed attributes
@@ -32,30 +33,32 @@ class Character(pygame.sprite.Sprite):
     health = 0  # current health
     level = 1  # characters level, should be used for some calculations
 
+    @abstractmethod
     def __init__(self):
-        raise NotImplementedError("Should have implemented this. Also use super().__init__()")
+        super().__init__()  # call Sprite init
 
+    @abstractmethod
     def move(self, direction, pixels, screen_size):
         """Moves the sprite pixels to the direction (enum), if he doesn't leave the screen.
         Else stays where he is."""
-        raise NotImplementedError("Should have implemented this")
+        pass
 
+    @abstractmethod
     def jump(self):
         """Jumps the character based on it's jump specs."""
-        raise NotImplementedError("Should have implemented this")
+        pass
 
-    def stick_to_ground(self, ground_level):
-        """Sets the sprite to ground_level given, all velocities set to 0."""
-        raise NotImplementedError("Should have implemented this")
-
+    @abstractmethod
     def damage(self, amount):
         """Damages amount of the health of the sprite."""
-        raise NotImplementedError("Should have implemented this")
+        pass
 
+    @abstractmethod
     def attack(self, other):
         """Attacks an other sprite."""
-        raise NotImplementedError("Should have implemented this")
+        pass
 
-    def update(self):
-        """Update function of Sprite, overwritten"""
-        raise NotImplementedError("Should have implemented this")
+    @abstractmethod
+    def update(self, world):
+        """Update function of Sprite, overwritten. World is a sprite group having all obstacles"""
+        pass
