@@ -14,14 +14,15 @@ DRAW_OBSTACLES = True
 
 def draw_health(color, health):
     """Draws a line according to health given at the health-bar position."""
-    pygame.draw.line(screen, color, [size[0] - 10, 20], [size[0] - 10 - health * 1.5, 20], 10)
+    pygame.draw.line(screen, color, [size[0] - 50, 20], [size[0] - 50 - health * 1.5, 20], 10)
 
 
 # init game
 pygame.init()
 
-you_loose_font = pygame.font.SysFont('Comic Sans MS', 100)
-you_loose_surface = you_loose_font.render('You Lose!', False, (255, 0, 0))
+you_lose_font = pygame.font.SysFont('Comic Sans MS', 100)
+you_lose_surface = you_lose_font.render('You Lose!', False, (255, 0, 0))
+health_font = pygame.font.SysFont('Comic Sans MS', 24)
 
 # init screen
 size = (800, 600)
@@ -102,78 +103,93 @@ while carry_on:
                     player_character.jump()
             elif event.key == pygame.K_o:
                 DRAW_OBSTACLES = not DRAW_OBSTACLES
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pressed()[0]:
+                print("Mouse event at " + str(pygame.mouse.get_pos()))
 
         elif event.type == pygame.KEYUP:
             pass
 
-    keys = pygame.key.get_pressed()
-    world_shift = 0  # amount, the world has to be shifted for movement
     if game_running:
+
+        keys = pygame.key.get_pressed()
+        world_shift = 0  # amount, the world has to be shifted for movement
+
         if hF.list_in_tuple(left_keys, keys):
             world_shift = player_character.move(character.Direction.LEFT, 5, size)
         if hF.list_in_tuple(right_keys, keys):
             world_shift = player_character.move(character.Direction.RIGHT, 5, size)
-    # shift the world
-    if not world_shift == 0:
-        back_ground.shift(world_shift)
-        hF.shift_group_x(obstacles.sprites(), world_shift)
-        hF.shift_group_x(all_sprites.sprites(), world_shift)
 
-    collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
+        # shift the world
+        if not world_shift == 0:
+            back_ground.shift(world_shift)
+            hF.shift_group_x(obstacles.sprites(), world_shift)
+            hF.shift_group_x(all_sprites.sprites(), world_shift)
 
-    # create a random sparkledust
-    rand = random.random()
-    if rand < 1/60:
-        sparkle = sparkledust.Sparkledust()
-        sparkle.rect.center = [random.randint(100, 700), 600]
-        all_sprites.add(sparkle)
-        enemies.add(sparkle)
+        collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
 
-    # damage for every collision
-    for enemy in collision_list:
-        enemy.attack(player_character)
+        # create a random sparkledust about every second
+        rand = random.random()
+        if rand < 1/60:
+            sparkle = sparkledust.Sparkledust()
+            sparkle.rect.center = [random.randint(100, 700), 600]
+            all_sprites.add(sparkle)
+            enemies.add(sparkle)
 
-    # update with game logic
-    if game_running:
+        # damage for every collision
+        for enemy in collision_list:
+            enemy.attack(player_character)
+
+        # update with game logic
         all_sprites.update(obstacles)
 
-    # draw background
-    background_sprites.draw(screen)
+        # draw background
+        background_sprites.draw(screen)
 
-    # draw sun
-    background.draw_sun(screen, sun_rotation)
+        # draw sun
+        background.draw_sun(screen, sun_rotation)
 
-    sun_rotation -= math.pi*2
-    sun_rotation += math.pi/360
+        sun_rotation -= math.pi*2
+        sun_rotation += math.pi/360
 
-    # Draw all the sprites in one go.
-    all_sprites.draw(screen)
+        # Draw all the sprites in one go.
+        all_sprites.draw(screen)
 
-    # draw health
-    if player_character.health <= 0:
-        # show red overlay
-        red_surface = pygame.Surface(size)  # the size of your rect
-        red_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
-        red_surface.fill(c.RED_DEAD)  # this fills the entire surface
-        screen.blit(red_surface, (0, 0))
-        # show message
-        screen.blit(you_loose_surface, (180, 200))
-        # stop movement
-        game_running = False
-    if player_character.health < 20:
-        draw_health(c.HEALTH_RED, player_character.health)
-    elif player_character.health < 50:
-        draw_health(c.HEALTH_YELLOW, player_character.health)
-    else:
-        draw_health(c.HEALTH_GREEN, player_character.health)
+        # draw health
+        if player_character.health <= 0:
+            # show red overlay
+            red_surface = pygame.Surface(size)  # the size of your rect
+            red_surface.set_alpha(200)  # alpha level out of 255. 255 is no transparency
+            red_surface.fill(c.RED_DEAD)  # this fills the entire surface
+            screen.blit(red_surface, (0, 0))
+            # show message
+            screen.blit(you_lose_surface, (size[0]/2-180, size[1]/2-50))
+            # stop movement
+            game_running = False
+        if player_character.health < 20:
+            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_RED)
+            screen.blit(health_surface, (size[0] - 40, 13))
+            draw_health(c.HEALTH_RED, player_character.health)
+        elif player_character.health < 50:
+            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_YELLOW)
+            screen.blit(health_surface, (size[0] - 40, 13))
+            draw_health(c.HEALTH_YELLOW, player_character.health)
+        else:
+            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_GREEN)
+            screen.blit(health_surface, (size[0] - 40, 13))
+            draw_health(c.HEALTH_GREEN, player_character.health)
 
-    # draw obstacles for debug
-    if DRAW_OBSTACLES:
-        # show red overlay
-        obstacles.draw(screen)
+        # draw obstacles for debug
+        if DRAW_OBSTACLES:
+            # show red overlay
+            obstacles.draw(screen)
 
-    # --- Go ahead and update the screen with what we've drawn.
-    pygame.display.flip()
+        for sprite in all_sprites.sprites():
+            if sprite.rect.y < -50 or sprite.rect.y > (size[1] + 50):
+                sprite.kill()
+
+        # --- Go ahead and update the screen with what we've drawn.
+        pygame.display.flip()
 
     # --- Limit to 60 frames per second
     clock.tick(60)
