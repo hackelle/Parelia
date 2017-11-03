@@ -20,7 +20,7 @@ class Character(ABC, pygame.sprite.Sprite):
     jump_height = 0  # How high can the character jump in a single jump?
     max_possible_jumps = 0  # Number of possible jumps. 1 for single jump, 2 for double ...
     max_health = 0  # maximum health
-    armor = 0  # factor for protection (1x damage @ 100)
+    armour = 0  # factor for protection (1x damage @ 100)
     strength = 0  # factor for damage dealing
     critical_chance = 0  # possibility for critical hits
     walk_speed = 0  # the speed, the character can walk each update

@@ -102,7 +102,10 @@ class Catofly(character.Character):
         self.current_angle -= math.pi/256 + random.random() * 0.02
 
     def attack(self, other):
-        if issubclass(character.Character, other):
-            pass
+        if isinstance(other, character.Character):
+            if self.critical_chance > random.random():
+                other.damage(self.strength * 2)
+            else:
+                other.damage(self.strength)
         else:
             raise TypeError("other has to be a character")

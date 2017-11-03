@@ -130,7 +130,8 @@ while carry_on:
         enemies.add(sparkle)
 
     # damage for every collision
-    player_character.damage(2 * len(collision_list))
+    for enemy in collision_list:
+        enemy.attack(player_character)
 
     # update with game logic
     if game_running:

@@ -3,6 +3,7 @@ import colors as c
 import os.path
 import character
 import math
+import random
 
 images = []
 
@@ -26,8 +27,8 @@ class Dwarf(character.Character):
     jump_height = 15  # How high can the character jump in a single jump?
     max_possible_jumps = 2  # Number of possible jumps. 1 for single jump, 2 for double ...
     max_health = 100  # maximum health
-    armor = 100  # factor for protection (1x damage @ 100)
-    strength = 0  # factor for damage dealing
+    armour = 100  # factor for protection (1x damage @ 100)
+    strength = 5  # factor for damage dealing
     critical_chance = 0  # possibility for critical hits
     walk_speed = 5  # the speed, the character can walk each update
     images = []  # array of animation images
@@ -95,7 +96,7 @@ class Dwarf(character.Character):
     def damage(self, amount):
         """Damages amount of the health of the sprite."""
         if self.health > 0:
-            self.health -= amount
+            self.health -= amount * (1 - self.armour / (self.armour + 100))
         else:
             self.health = 0
 
@@ -140,7 +141,10 @@ class Dwarf(character.Character):
         self.image = self.images[round(math.floor(self.image_index))]  # round only for to_int
 
     def attack(self, other):
-        if issubclass(character.Character, other):
-            pass
+        if isinstance(other, character.Character):
+            if self.critical_chance > random.random():
+                other.damage(self.strength * 2)
+            else:
+                other.damage(self.strength)
         else:
             raise TypeError("other has to be a character")
