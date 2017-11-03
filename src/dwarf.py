@@ -4,6 +4,20 @@ import os.path
 import character
 import math
 
+images = []
+
+
+def prepare_dwarf_pictures():
+    path = "../res/pics/dwarf"
+    if os.path.isdir(path):
+        print("loading " + path)
+        files = sorted(os.listdir(path))
+        for file in files:
+            file_path = path + '/' + file
+            if os.path.isfile(file_path):
+                images.append(pygame.image.load(file_path).convert_alpha())
+                print("loading file " + file_path)
+
 
 class Dwarf(character.Character):
     """This class represents a character. It derives from the "Sprite" class in Pygame."""
@@ -32,6 +46,7 @@ class Dwarf(character.Character):
     next_y = -1
 
     def __init__(self):
+        global images
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -45,20 +60,11 @@ class Dwarf(character.Character):
         pygame.draw.rect(self.image, c.BLACK, [0, 0, 40, 50])
 
         # Instead we could load a proper picture of a character
-        # Overwrite self.image, if dwarf-picture found
-
-        path = "../res/pics/dwarf"
-        if os.path.isdir(path):
-            print("loading " + path)
-            files = sorted(os.listdir(path))
-            for file in files:
-                file_path = path + '/' + file
-                if os.path.isfile(file_path):
-                    self.images.append(pygame.image.load(file_path).convert_alpha())
-                    print("loading file " + file_path)
-            if len(self.images) > 0:
-                self.image = self.images[0]
-                self.image_index = 0
+        # load images static
+        self.images = images
+        if len(self.images) > 0:
+            self.image = self.images[0]
+            self.image_index = 0
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()

@@ -2,22 +2,21 @@ import pygame
 import os.path
 from PIL import Image
 import colors as c
+import catofly
 
 
-def pic_to_sprite_group_rec(pic):
+def pic_to_sprite_group_rec(image):
     """Recursive part of sprite group making"""
     sprite = pygame.sprite.Sprite()
     sprite_group = pygame.sprite.Group()
-    sprite.image = pygame.image.load(pic).convert_alpha()
     start_x = -1
     start_y = -1
 
-    im = Image.open(pic)  # Can be many different formats.
-    pix = im.load()
+    pix = image.load()
     # find the first black pixel going column by column from the left
     exit_now = False
-    for i in range(im.size[0]):
-        for j in range(im.size[1]):
+    for i in range(image.size[0]):
+        for j in range(image.size[1]):
             if pix[i, j] == (0, 0, 0, 255):
                 start_x = i
                 start_y = j
@@ -32,15 +31,15 @@ def pic_to_sprite_group_rec(pic):
         return sprite_group
 
     # assume until end of picture, if not, change in break
-    end_y = im.size[1] - 1
-    for y in range(start_y, im.size[1]):
+    end_y = image.size[1] - 1
+    for y in range(start_y, image.size[1]):
         if not pix[start_x, y] == (0, 0, 0, 255):
             # until there are not one more black pixel direct under this one
             end_y = y-1
             break
 
     exit_now = False
-    for x in range(start_x, im.size[0]):
+    for x in range(start_x, image.size[0]):
         for y in range(start_y, end_y+1):
             if not pix[x, y] == (0, 0, 0, 255):
                 # until there are no more black pixel columns direct next to this one
@@ -54,9 +53,6 @@ def pic_to_sprite_group_rec(pic):
             break
         else:
             end_x = x
-
-    # write new data to the file
-    im.save(pic)
 
     # create rectangle in correct proportions
     sprite.image = pygame.Surface([end_x - start_x + 1, end_y - start_y + 1])
@@ -74,14 +70,13 @@ def pic_to_sprite_group_rec(pic):
     # add sprite to group
     sprite_group.add(sprite)
     # add all other sprites recursive
-    sprite_group.add(pic_to_sprite_group_rec(pic))
+    sprite_group.add(pic_to_sprite_group_rec(image))
     return sprite_group
 
 
-def add_surrounding_sprites(picture):
+def add_surrounding_sprites(image):
     """Returns 4 sprites surrounding the picture in a group."""
     sprite_group = pygame.sprite.Group()
-    image = Image.open(picture)
 
     color = c.OBSTACLE  # needs to be 4D including alpha for transparency
 
@@ -141,19 +136,20 @@ def pic_to_sprite_group(picture):
     Collects them in a sprite group and returns it"""
     sprite_group = pygame.sprite.Group()
     if os.path.isfile(picture):
-        pic = Image.open(picture)
-        name, extension = os.path.splitext(picture)
-        pic_path = name + "_temp" + extension
-        pic.save(pic_path)
-        sprite_group.add(pic_to_sprite_group_rec(pic_path))
+        image = Image.open(picture)
+        sprite_group.add(pic_to_sprite_group_rec(image))
         # make a big surrounding sprite
-        sprite_group.add(add_surrounding_sprites(picture))
+        sprite_group.add(add_surrounding_sprites(image))
+    print("terrain build")
     return sprite_group
 
 
 def shift_group_x(sprite_list, amount):
     for sprite in sprite_list:
-        sprite.rect.x = sprite.rect.x + amount
+        if isinstance(sprite, catofly.Catofly):
+            sprite.center[0] += amount
+        else:
+            sprite.rect.x += amount
 
 
 def list_in_tuple(list_in, tuple_in):

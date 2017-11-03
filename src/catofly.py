@@ -3,6 +3,25 @@ import colors as c
 import os.path
 import character
 import math
+import random
+
+images = []
+
+
+def prepare_catofly_pictures():
+    """Prepares images for use in Catofly class.
+    Static picture loading."""
+    path = "../res/pics/catofly"
+    if os.path.isdir(path):
+        print("loading " + path)
+        files = sorted(os.listdir(path))
+        for file in files:
+            file_path = path + '/' + file
+            if os.path.isfile(file_path):
+                # scale down to 40, 40
+                image = pygame.transform.scale(pygame.image.load(file_path).convert_alpha(), (40, 40))
+                images.append(image)
+                print("loading file " + file_path)
 
 
 class Catofly(character.Character):
@@ -33,6 +52,7 @@ class Catofly(character.Character):
     current_angle = 0  # current fly around
 
     def __init__(self):
+        global images
         # Call the parent class (Sprite) constructor
         super().__init__()
 
@@ -46,22 +66,11 @@ class Catofly(character.Character):
         pygame.draw.rect(self.image, c.BLACK, [0, 0, 40, 50])
 
         # Instead we could load a proper picture of a character
-        # Overwrite self.image, if dwarf-picture found
-
-        path = "../res/pics/catofly"
-        if os.path.isdir(path):
-            print("loading " + path)
-            files = sorted(os.listdir(path))
-            for file in files:
-                file_path = path + '/' + file
-                if os.path.isfile(file_path):
-                    # scale down to 40, 40
-                    image = pygame.transform.scale(pygame.image.load(file_path).convert_alpha(), (40, 40))
-                    self.images.append(image)
-                    print("loading file " + file_path)
-            if len(self.images) > 0:
-                self.image = self.images[0]
-                self.image_index = 0
+        # load images static
+        self.images = images
+        if len(self.images) > 0:
+            self.image = self.images[0]
+            self.image_index = 0
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -80,7 +89,7 @@ class Catofly(character.Character):
         """Update function of Sprite, overwritten.
         Will move only, if there is no collision between the world-sprite group and self."""
         # animation, get next frame
-        self.image_index += 1
+        self.image_index += 0.2
         if self.image_index >= len(self.images):
             self.image_index = 0
 
@@ -90,8 +99,7 @@ class Catofly(character.Character):
         self.image = pygame.transform.rotate(self.image, -self.current_angle/math.pi * 180)
         self.rect.center = [self.center[0] + self.radius * math.cos(self.current_angle),
                             self.center[1] + self.radius * math.sin(self.current_angle)]
-        self.current_angle -= math.pi/256
-        print(self.rect.center)
+        self.current_angle -= math.pi/256 + random.random() * 0.02
 
     def attack(self, other):
         if issubclass(character.Character, other):

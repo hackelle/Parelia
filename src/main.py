@@ -19,7 +19,7 @@ def draw_health(color, health):
 pygame.init()
 
 you_loose_font = pygame.font.SysFont('Comic Sans MS', 100)
-you_loose_surface = you_loose_font.render('Yuu Loose!', False, (255, 0, 0))
+you_loose_surface = you_loose_font.render('You Lose!', False, (255, 0, 0))
 
 # init screen
 size = (800, 600)
@@ -36,6 +36,8 @@ clock = pygame.time.Clock()
 
 sun_rotation = 0
 
+dwarf.prepare_dwarf_pictures()
+
 # create the character
 player_character = dwarf.Dwarf()
 player_character.rect.x = 20
@@ -46,17 +48,17 @@ enemy_dwarf_1 = dwarf.Dwarf()
 enemy_dwarf_1.rect.x = 450
 enemy_dwarf_1.rect.y = 470
 
-enemy_catofly_1 = catofly.Catofly()
-enemy_catofly_1.center = [300, 300]
-enemy_catofly_1.radius = 40
+catofly.prepare_catofly_pictures()
 
-enemy_catofly_2 = catofly.Catofly()
-enemy_catofly_2.center = [500, 300]
-enemy_catofly_2.radius = 40
+enemy_catofly = pygame.sprite.Group()
+catofly_centers = [[300, 300], [500, 300], [200, 400]]
+catofly_radius = [40, 40, 30]
+for i in range(3):
+    this_catofly = catofly.Catofly()
+    this_catofly.center = catofly_centers[i]
+    this_catofly.radius = catofly_radius[i]
+    enemy_catofly.add(this_catofly)
 
-enemy_catofly_3 = catofly.Catofly()
-enemy_catofly_3.center = [200, 400]
-enemy_catofly_3.radius = 30
 
 # load a background in a sprite group
 back_ground = background.Background('../res/world/simple_hills_big.png', [0, 0])
@@ -67,9 +69,7 @@ background_sprites.add(back_ground)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player_character)
 all_sprites.add(enemy_dwarf_1)
-all_sprites.add(enemy_catofly_1)
-all_sprites.add(enemy_catofly_2)
-all_sprites.add(enemy_catofly_3)
+all_sprites.add(enemy_catofly)
 
 
 # obstacles are in here
@@ -79,7 +79,7 @@ obstacles.add(hF.pic_to_sprite_group("../res/world/simple_hills_big_terrain.png"
 # create an enemy group for damage
 enemies = pygame.sprite.Group()
 enemies.add(enemy_dwarf_1)
-enemies.add(enemy_catofly_1)
+enemies.add(enemy_catofly)
 
 # define control keys
 jump_keys = [pygame.K_SPACE, pygame.K_w, pygame.K_UP, pygame.K_KP8]
