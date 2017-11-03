@@ -6,6 +6,8 @@ import background
 import character
 import helpingFuntions as hF
 import catofly
+import random
+import sparkledust
 
 DRAW_OBSTACLES = True
 
@@ -36,9 +38,10 @@ clock = pygame.time.Clock()
 
 sun_rotation = 0
 
-dwarf.prepare_dwarf_pictures()
-
+#prepare random spawns
+sparkledust.prepare_sparkledust_pictures()
 # create the character
+dwarf.prepare_dwarf_pictures()
 player_character = dwarf.Dwarf()
 player_character.rect.x = 20
 player_character.rect.y = 470
@@ -49,14 +52,13 @@ enemy_dwarf_1.rect.x = 450
 enemy_dwarf_1.rect.y = 470
 
 catofly.prepare_catofly_pictures()
-
 enemy_catofly = pygame.sprite.Group()
-catofly_centers = [[300, 300], [500, 300], [200, 400]]
-catofly_radius = [40, 40, 30]
-for i in range(3):
+
+for i in range(5):
     this_catofly = catofly.Catofly()
-    this_catofly.center = catofly_centers[i]
-    this_catofly.radius = catofly_radius[i]
+    this_catofly.center = [random.randint(100, 700), random.randint(200, 400)]
+    this_catofly.radius = random.randint(30, 50)
+    this_catofly.current_angle = random.random() * 2 * math.pi
     enemy_catofly.add(this_catofly)
 
 
@@ -118,6 +120,14 @@ while carry_on:
         hF.shift_group_x(all_sprites.sprites(), world_shift)
 
     collision_list = pygame.sprite.spritecollide(player_character, enemies, False)
+
+    # create a random sparkledust
+    rand = random.random()
+    if rand < 1/60:
+        sparkle = sparkledust.Sparkledust()
+        sparkle.rect.center = [random.randint(100, 700), 600]
+        all_sprites.add(sparkle)
+        enemies.add(sparkle)
 
     # damage for every collision
     player_character.damage(2 * len(collision_list))
