@@ -8,8 +8,9 @@ import helpingFuntions as hF
 import catofly
 import random
 import sparkledust
+import player
 
-DRAW_OBSTACLES = True
+DRAW_OBSTACLES = False
 
 
 def draw_health(color, health):
@@ -39,11 +40,12 @@ clock = pygame.time.Clock()
 
 sun_rotation = 0
 
-#prepare random spawns
+# prepare random spawns
 sparkledust.prepare_sparkledust_pictures()
 # create the character
 dwarf.prepare_dwarf_pictures()
-player_character = dwarf.Dwarf()
+player.prepare_player_pictures()
+player_character = player.Player()
 player_character.rect.x = 20
 player_character.rect.y = 470
 
@@ -102,8 +104,10 @@ while carry_on:
                 if game_running:
                     player_character.jump()
             elif event.key == pygame.K_o:
+                # toggle debug obstacles
                 DRAW_OBSTACLES = not DRAW_OBSTACLES
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            # mouse was clicked
             if pygame.mouse.get_pressed()[0]:
                 print("Mouse event at " + str(pygame.mouse.get_pos()))
 
@@ -167,15 +171,18 @@ while carry_on:
             # stop movement
             game_running = False
         if player_character.health < 20:
-            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_RED)
+            if player_character.health < 10:
+                health_surface = health_font.render('  ' + str(round(player_character.health)), False, c.HEALTH_RED)
+            else:
+                health_surface = health_font.render(' ' + str(round(player_character.health)), False, c.HEALTH_RED)
             screen.blit(health_surface, (size[0] - 40, 13))
             draw_health(c.HEALTH_RED, player_character.health)
         elif player_character.health < 50:
-            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_YELLOW)
+            health_surface = health_font.render(' ' + str(round(player_character.health)), False, c.HEALTH_YELLOW)
             screen.blit(health_surface, (size[0] - 40, 13))
             draw_health(c.HEALTH_YELLOW, player_character.health)
         else:
-            health_surface = health_font.render(str(player_character.health), False, c.HEALTH_GREEN)
+            health_surface = health_font.render(str(round(player_character.health)), False, c.HEALTH_GREEN)
             screen.blit(health_surface, (size[0] - 40, 13))
             draw_health(c.HEALTH_GREEN, player_character.health)
 

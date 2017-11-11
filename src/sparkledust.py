@@ -91,7 +91,8 @@ class Sparkledust(character.Character):
         if self.image_index >= len(self.images):
             self.image_index = 0
 
-        self.image = self.images[round(math.floor(self.image_index))]  # round only for to_int
+        if len(self.images) != 0:
+            self.image = self.images[round(math.floor(self.image_index))]  # round only for to_int
 
         # rotate picture and set position
         self.rect.center = [self.rect.center[0], round(math.floor(self.rect.center[1] - self.center_offset))]

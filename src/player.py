@@ -8,8 +8,8 @@ import random
 images = []
 
 
-def prepare_dwarf_pictures():
-    path = "../res/pics/dwarf"
+def prepare_player_pictures():
+    path = "../res/pics/player"
     if os.path.isdir(path):
         print("loading " + path)
         files = sorted(os.listdir(path))
@@ -20,7 +20,7 @@ def prepare_dwarf_pictures():
                 print("loading file " + file_path)
 
 
-class Dwarf(character.Character):
+class Player(character.Character):
     """This class represents a character. It derives from the "Sprite" class in Pygame."""
 
     # fixed attributes
