@@ -123,33 +123,6 @@ c__/fast:
 	$(MAKE) -f CMakeFiles/c__.dir/build.make CMakeFiles/c__.dir/build
 .PHONY : c__/fast
 
-engine/engine.o: engine/engine.cpp.o
-
-.PHONY : engine/engine.o
-
-# target to build an object file
-engine/engine.cpp.o:
-	$(MAKE) -f CMakeFiles/c__.dir/build.make CMakeFiles/c__.dir/engine/engine.cpp.o
-.PHONY : engine/engine.cpp.o
-
-engine/engine.i: engine/engine.cpp.i
-
-.PHONY : engine/engine.i
-
-# target to preprocess a source file
-engine/engine.cpp.i:
-	$(MAKE) -f CMakeFiles/c__.dir/build.make CMakeFiles/c__.dir/engine/engine.cpp.i
-.PHONY : engine/engine.cpp.i
-
-engine/engine.s: engine/engine.cpp.s
-
-.PHONY : engine/engine.s
-
-# target to generate assembly for a file
-engine/engine.cpp.s:
-	$(MAKE) -f CMakeFiles/c__.dir/build.make CMakeFiles/c__.dir/engine/engine.cpp.s
-.PHONY : engine/engine.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -186,9 +159,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... c__"
-	@echo "... engine/engine.o"
-	@echo "... engine/engine.i"
-	@echo "... engine/engine.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
